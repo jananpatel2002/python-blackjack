@@ -42,34 +42,46 @@ def drawCard():
     return cards[random.randint(0, len(cards) - 1)]
 
 
+def addToDealer(dealerCardList):
+    dealerValue = sum(dealerCardList)
+    while dealerValue < 17:
+        newDealerCard = drawCard()
+        if newDealerCard == 11 and (newDealerCard + dealerValue) > 21:
+            newDealerCard = 1
+        dealerValue += newDealerCard
+        dealerCardList.append(newDealerCard)
+    return dealerCardList
+
+
 def blackjack():
     print(logo)
     userValue = 0
     dealerValue = 0
     userCardList = []
-    dealerCardList = []
+    dealerCardLists = []
     n1 = drawCard()
     n2 = drawCard()
     if (n1 == 11 and n2 == 11):
         n1 = 1
     userCardList.extend([n1, n2])
 
-    dealerCardList.append(drawCard())
+    dealerCardLists.append(drawCard())
 
     for number in userCardList:
         userValue += number
-    for number in dealerCardList:
+    for number in dealerCardLists:
         dealerValue += number
 
     print(
         f"    Your current cards are {userCardList} which makes a total of {userValue}"
     )
 
-    print(f"    The dealer is currently at a value of {dealerCardList[0]}")
+    print(f"    The dealer is currently at a value of {dealerCardLists[0]}")
     choice = 'y'
     while (userValue < 21 and dealerValue < 21 and choice == 'y'):
 
         choice = input("Would you like to pick another card? 'y' or 'n' ")
+
         if (choice == 'y' and userValue < 21):
             newCard = drawCard()
             if newCard == 11 and (newCard + userValue) > 21:
@@ -77,34 +89,26 @@ def blackjack():
             userValue += newCard
             userCardList.append(newCard)
             print(f"    Your cards {userCardList}, current score {userValue}")
-          
 
-        if dealerValue < 17:
-            newDealerCard = drawCard()
-            if newDealerCard == 11 and (newDealerCard + dealerValue) > 21:
-                newDealerCard = 1
-            dealerValue += newDealerCard
-            dealerCardList.append(newDealerCard)
-            # print(f"    Dealer first Card: {dealerCardList[0]}")
-            print(f"Dealers total: {dealerValue}")
-           
+    dealerCardLists = addToDealer(dealerCardLists)
+    x = sum(dealerCardLists)
     print(
         f"    Your final Hand is {userCardList} which makes a total of {userValue}"
     )
     print(
-        f"    Dealer Final Hand is {dealerCardList} which makes a total of {dealerValue}"
+        f"    Dealer Final Hand is {dealerCardLists} which makes a total of {x}"
     )
 
-    if (userValue == dealerValue and userValue <= 21 and dealerValue <= 21):
+    if (userValue == x and userValue <= 21 and x <= 21):
         print("It was a Tie!")
     elif (userValue > 21):
         print("You Lose! You went over 21")
-    elif userValue < dealerValue and dealerValue <= 21 and userValue <= 21:
+    elif userValue < x and x <= 21 and userValue <= 21:
         print("You Lose, the dealer has a higher number!")
     else:
         print("You Win!!!")
 
-    if (input("Would you like to try again? Yes or No? ").lower() == 'yes'):
+    if (input("\nWould you like to try again? Yes or No? ").lower() == 'yes'):
         clear()
         blackjack()
 
